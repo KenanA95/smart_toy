@@ -20,8 +20,7 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
 # Forward the message along to the hardware side. For now just print out a message to console
 def forward_command(post_data):
     # Parse out the command and value from the POST
-    command = post_data.split('=')[0]
-    val = post_data.split('=')[1]
+    command, val = post_data.split('=')
 
     if command == 'f':
         print("Forward ", val)
