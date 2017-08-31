@@ -1,8 +1,4 @@
 import http.server
-import urllib
-import json
-
-PORT = 8000
 
 
 class ToyHandler(http.server.BaseHTTPRequestHandler):
@@ -23,27 +19,27 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
 
 # Forward the message along to the hardware side. For now just print out a message to console
 def forward_command(post_data):
-    post_arg = post_data.split('=')[0]
+    # Parse out the command and value from the POST
+    command = post_data.split('=')[0]
     val = post_data.split('=')[1]
 
-    if post_arg == 'f':
+    if command == 'f':
         print("Forward ", val)
-    elif post_arg == 'b':
+    elif command == 'b':
         print("Backward ", val)
-    elif post_arg == 'l':
+    elif command == 'l':
         print("Left  ", val)
-    elif post_arg == 'r':
+    elif command == 'r':
         print("Right  ", val)
     else:
-        print("Invalid Command: ", post_arg)
+        print("Invalid Command: ", command)
 
 
-def run(server_class=http.server.HTTPServer, handler_class=ToyHandler):
+def run_server(port, server_class=http.server.HTTPServer, handler_class=ToyHandler):
 
-    server_address = ('', PORT)
+    server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-
-    print("Serving PORT: ", PORT)
+    print("Serving PORT: ", port)
     httpd.serve_forever()
 
-run()
+run_server(port=8000)
