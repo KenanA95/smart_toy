@@ -14,8 +14,8 @@ class Record:
         return self.state
 
 
+# Store route in database file
 def init_db():
-    # Store route in database file
     conn = sqlite3.connect('route.db')
 
     # Initialize data table
@@ -52,7 +52,6 @@ def repeat_route(conn):
     rows = cur.fetchall()
 
     for index, row in enumerate(rows):
-
         if row[0] == 'stop':
             print("Completed the recorded route...")
             return
@@ -71,9 +70,7 @@ def repeat_route(conn):
 # Forward the message along to the hardware side. For now just print out a message to console
 def send_to_hardware(command, val):
 
-    if command == 'fb':
+    if command == '/forwardBack':
         print("Forward/Backward Slider: ", val)
-    elif command == 'lr':
-        print("Left/Right Slider: ", val)
     else:
-        print("Invalid Command: ", command)
+        print("Left/Right Slider: ", val)

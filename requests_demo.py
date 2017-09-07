@@ -6,23 +6,17 @@ import time
 url = "http://localhost:8000/"
 
 
-command = 'start'
-r = requests.post(url, command)
+r = requests.post(url+'start', '0')
 time.sleep(3)
 
-command = "fb=19"
-r = requests.post(url, command)
+r = requests.post(url+'forwardBack', '50')
 time.sleep(3)
 
-
-command = "lr=108"
-r = requests.post(url, command)
+r = requests.post(url+'leftRight', '122')
 time.sleep(3)
 
-command = "stop"
-r = requests.post(url, command)
+r = requests.post(url+'stop', '0')
 time.sleep(1)
 
-command = "play"
-r = requests.post(url, command)
+r = requests.post(url+'play', '0')
 

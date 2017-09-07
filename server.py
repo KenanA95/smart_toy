@@ -19,51 +19,44 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(length).decode('utf-8')
-        handle_request(post_data)
+        value = self.rfile.read(length).decode('utf-8')
+        handle_request(self.path, value)
 
 
-def run_server(port, server_class=http.server.HTTPServer, handler_class=ToyHandler):
+def run_server(port):
 
     server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
+    httpd = http.server.HTTPServer(server_address, ToyHandler)
     print("Serving PORT: ", port)
     httpd.serve_forever()
 
 
-# Parse the POST and fire off a function based on the command
-def handle_request(post_data):
+def handle_request(path, value):
 
-    # If it has an equals sign its a slider request for forward/back/left/right
-    if len(post_data.split('=')) > 1:
-        command, val = post_data.split('=')
-        send_to_hardware(command, val)
+    if path == '/forwardBack' or path == '/leftRight':
+        send_to_hardware(command=path, val=value)
 
-        # If we're in record mode store the command in the db
         if record.get_state():
-            print("Inserting route into db...")
-            insert_route(conn, command, val, datetime.now())
+            print("Inserting command into db...")
+            insert_route(conn, path, value, timestamp=datetime.now())
 
-    # Otherwise its a button request to start/stop/play a recorded route
-    else:
-        if post_data == 'start':
-            print("Start recording selected...")
-            # Clear any previous routes from the table
-            cur = conn.cursor()
-            cur.execute('delete from routes')
-            conn.commit()
-            record.set_state(True)
+    elif path == '/start':
+        print("Now recording commands...")
+        # Clear any previous routes from the table
+        cur = conn.cursor()
+        cur.execute('delete from routes')
+        conn.commit()
+        record.set_state(True)
 
-        elif post_data == 'stop':
-            print("Stop recording selected. Current routes saved...")
-            output_routes(conn)
-            insert_route(conn, command="stop", val=0, timestamp=datetime.now())
-            record.set_state(False)
+    elif path == '/stop':
+        print("Stop recording selected. Current routes saved...")
+        output_routes(conn)
+        insert_route(conn, command="stop", val=0, timestamp=datetime.now())
+        record.set_state(False)
 
-        elif post_data == 'play':
-            print("Play selected. Now repeating the saved route...")
-            repeat_route(conn)
-
+    elif path == '/play':
+        print("Play selected. Now repeating the saved route...")
+        repeat_route(conn)
 
 conn = init_db()
 run_server(port=8000)
