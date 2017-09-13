@@ -16,6 +16,7 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
 
     def do_GET(self):
+        print("In GET function...")
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-type', 'text/html')
@@ -27,7 +28,15 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         length = int(self.headers['Content-Length'])
         value = self.rfile.read(length).decode('utf-8')
+        debug_statement_post(self.path, value)
         handle_request(self.path, value)
+
+
+# temp functions
+def debug_statement_post(path, value):
+    print("In POST function...")
+    print("Path sent to: {0}".format(path))
+    print("Value received {0}".format(value))
 
 
 def run_server(port):
