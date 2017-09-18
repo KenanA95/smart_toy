@@ -35,7 +35,13 @@ class Robot:
         self.right.start(0)
 
         self.forward.ChangeDutyCycle(100) 
-          
+    
+    def stop(self):
+        self.backward.ChangeDutyCycle(0)
+        self.forward.ChangeDutyCycle(0)
+        self.forwardVoltage = 0
+        self.backwardVoltage = 0
+        
     def go_forward(self, val):
         if self.backward_voltage > 0:
             self.backward.ChangeDutyCycle(0)
