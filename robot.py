@@ -45,30 +45,21 @@ class Robot:
     def go_forward(self, val):
         if self.backward_voltage > 0:
             self.backward.ChangeDutyCycle(0)
-        if self.forward_voltage > 0:
-            self.forward.ChangeDutyCycle(val)
-        else:
-            self.forward.ChangeDutyCycle(val)
+        self.forward.ChangeDutyCycle(val)
         self.forward_voltage = val
         self.backward_voltage = 0
 
     def go_backward(self, val):
         if self.forward_voltage > 0:
             self.forward.ChangeDutyCycle(0)
-        if self.backward_voltage > 0:
-            self.backward.ChangeDutyCycle(val)
-        else:
-            self.backward.ChangeDutyCycle(val)
+        self.backward.ChangeDutyCycle(val)
         self.backward_voltage = val
         self.forward_voltage = 0
         
     def turn_right(self):
         if self.left_voltage > 0:
             self.left.ChangeDutyCycle(0)
-        if self.right_voltage > 0:
-            self.right.ChangeDutyCycle(100)
-        else:
-            self.right.ChangeDutyCycle(100)
+        self.right.ChangeDutyCycle(100)
         time.sleep(0.1)
         self.right.ChangeDutyCycle(15)
         self.right_voltage = 15
@@ -77,10 +68,7 @@ class Robot:
     def turn_left(self):
         if self.right_voltage > 0:
             self.right.ChangeDutyCycle(0)
-        if self.left_voltage > 0:
-            self.left.ChangeDutyCycle(100)
-        else:
-            self.left.ChangeDutyCycle(100)
+        self.left.ChangeDutyCycle(100)
         time.sleep(0.1)
         self.left.ChangeDutyCycle(15)
         self.left_voltage = 15
