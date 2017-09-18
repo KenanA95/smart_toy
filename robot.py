@@ -11,10 +11,10 @@ class Robot:
         backward_pin = 17
         left_pin = 22
         right_pin = 27
-        self.forwardVoltage = 0
-        self.backwardVoltage = 0
-        self.leftVoltage = 0
-        self.rightVoltage = 0
+        self.forward_voltage = 0
+        self.backward_voltage = 0
+        self.left_voltage = 0
+        self.right_voltage = 0
 
         # set GPIO 25 as output for forward led
         GPIO.setup(forward_pin, GPIO.OUT)
@@ -37,68 +37,68 @@ class Robot:
         self.forward.ChangeDutyCycle(100) 
           
     def go_forward(self, val):
-        if self.backwardVoltage > 0:
+        if self.backward_voltage > 0:
             self.backward.ChangeDutyCycle(0)
-        if self.forwardVoltage > 0:
+        if self.forward_voltage > 0:
             self.forward.ChangeDutyCycle(val)
         else:
             self.forward.ChangeDutyCycle(val)
-        self.forwardVoltage = val
-        self.backwardVoltage = 0
+        self.forward_voltage = val
+        self.backward_voltage = 0
 
     def go_backward(self, val):
-        if self.forwardVoltage > 0:
+        if self.forward_voltage > 0:
             self.forward.ChangeDutyCycle(0)
-        if self.backwardVoltage > 0:
+        if self.backward_voltage > 0:
             self.backward.ChangeDutyCycle(val)
         else:
             self.backward.ChangeDutyCycle(val)
-        self.backwardVoltage = val
-        self.forwardVoltage = 0
+        self.backward_voltage = val
+        self.forward_voltage = 0
         
     def turn_right(self):
-        if self.leftVoltage > 0:
+        if self.left_voltage > 0:
             self.left.ChangeDutyCycle(0)
-        if self.rightVoltage > 0:
+        if self.right_voltage > 0:
             self.right.ChangeDutyCycle(100)
         else:
             self.right.ChangeDutyCycle(100)
         time.sleep(0.1)
         self.right.ChangeDutyCycle(15)
-        self.rightVoltage = 15
-        self.leftVoltage = 0
+        self.right_voltage = 15
+        self.left_voltage = 0
         
     def turn_left(self):
-        if self.rightVoltage > 0:
+        if self.right_voltage > 0:
             self.right.ChangeDutyCycle(0)
-        if self.leftVoltage > 0:
+        if self.left_voltage > 0:
             self.left.ChangeDutyCycle(100)
         else:
             self.left.ChangeDutyCycle(100)
         time.sleep(0.1)
         self.left.ChangeDutyCycle(15)
-        self.leftVoltage = 15
-        self.rightVoltage = 0
+        self.left_voltage = 15
+        self.right_voltage = 0
         
     def straight(self):
-        if self.leftVoltage > 0:
+        if self.left_voltage > 0:
             self.left.ChangeDutyCycle(0)
             self.right.ChangeDutyCycle(15)
             time.sleep(0.1)
 
-        elif self.rightVoltage > 0:
+        elif self.right_voltage > 0:
             self.right.ChangeDutyCycle(0)
             self.left.ChangeDutyCycle(15)
             time.sleep(0.1)
 
-        if self.leftVoltage > 0:
+        if self.left_voltage > 0:
             self.left.ChangeDutyCycle(0)
 
-        if self.rightVoltage > 0:
+        if self.right_voltage > 0:
             self.right.ChangeDutyCycle(0)
 
-        self.leftVoltage = 0
-        self.rightVoltage = 0
+        self.left_voltage = 0
+        self.right_voltage = 0
         
 # robot = Robot()     
 # try:
