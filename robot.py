@@ -106,6 +106,9 @@ class Robot:
         self.left_voltage = 0
         self.right_voltage = 0
         
+    def endSession(self):        
+        GPIO.cleanup()
+        
 # robot = Robot()     
 # try:
     # while 1:
@@ -127,4 +130,3 @@ class Robot:
 
 # except KeyboardInterrupt:
     # pass
-GPIO.cleanup()
