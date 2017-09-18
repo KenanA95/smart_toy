@@ -18,5 +18,8 @@ class Robot:
     def turn_left(self):
         print("ROBOT turn left")
 
-    def go_straight(self):
+    def straight(self):
         print("ROBOT go STRAIGHT")
+
+    def stop(self):
+        print("ROBOT STOP")

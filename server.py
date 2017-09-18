@@ -30,10 +30,10 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
-        self.end_headers()
         length = int(self.headers['Content-Length'])
         value = json.loads(self.rfile.read(length).decode('utf-8'))
         handle_request(self.path, int(value['value']))
+        self.end_headers()
 
 
 def run_server(port):
@@ -82,7 +82,8 @@ def send_to_hardware(command, val):
         if 0 < val < 50:
             val = scale_value(val, current_range=49)
             robot.go_backward(val)
-
+        elif val == 50:
+            robot.stop()
         elif val > 50:
             val = scale_value(val, current_range=99)
             robot.go_forward(val)
@@ -91,7 +92,7 @@ def send_to_hardware(command, val):
         if 0 <= val < 50:
             robot.turn_left()
         elif val == 50:
-            robot.go_straight()
+            robot.straight()
         elif val >= 50:
             robot.turn_right()
 
