@@ -1,59 +1,65 @@
 import time
-import RPi.GPIO as GPIO # always needed with RPi.GPIO  
+import RPi.GPIO as GPIO  # always needed with RPi.GPIO
+
+
 class Robot:
     def __init__(self):
-        GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD numbering schemes. I use BCM  
+        # choose BCM or BOARD numbering schemes. I use BCM
+        GPIO.setmode(GPIO.BCM)
         GPIO.cleanup() 
-        forwardPin = 4
-        backwardPin = 17
-        leftPin = 22
-        rightPin = 27
+        forward_pin = 4
+        backward_pin = 17
+        left_pin = 22
+        right_pin = 27
         self.forwardVoltage = 0
         self.backwardVoltage = 0
         self.leftVoltage = 0
         self.rightVoltage = 0
 
-        GPIO.setup(forwardPin, GPIO.OUT)# set GPIO 25 as output for forward led
-        GPIO.setup(backwardPin, GPIO.OUT)
-        GPIO.setup(leftPin, GPIO.OUT)
-        GPIO.setup(rightPin, GPIO.OUT)
-          
-        self.forward = GPIO.PWM(forwardPin, 100)    # create object forward for PWM on port 25 at 100 Hertz 
-        self.backward = GPIO.PWM(backwardPin, 100)
-        self.left = GPIO.PWM(leftPin, 100)
-        self.right = GPIO.PWM(rightPin, 100)
-          
+        # set GPIO 25 as output for forward led
+        GPIO.setup(forward_pin, GPIO.OUT)
+        GPIO.setup(backward_pin, GPIO.OUT)
+        GPIO.setup(left_pin, GPIO.OUT)
+        GPIO.setup(right_pin, GPIO.OUT)
+
+        # create object forward for PWM on port 25 at 100 Hertz
+        self.forward = GPIO.PWM(forward_pin, 100)
+        self.backward = GPIO.PWM(backward_pin, 100)
+        self.left = GPIO.PWM(left_pin, 100)
+        self.right = GPIO.PWM(right_pin, 100)
+
+        # start forward led on 0 percent duty cycle (off)
         self.forward.start(0)
         self.backward.start(0)
         self.left.start(0)
-        self.right.start(0)              # start forward led on 0 percent duty cycle (off) 
+        self.right.start(0)
 
         self.forward.ChangeDutyCycle(100) 
           
-    def goForward(self,val):
-        if(self.backwardVoltage > 0):
+    def go_forward(self, val):
+        if self.backwardVoltage > 0:
             self.backward.ChangeDutyCycle(0)
-        if(self.forwardVoltage > 0):
+        if self.forwardVoltage > 0:
             self.forward.ChangeDutyCycle(val)
         else:
             self.forward.ChangeDutyCycle(val)
         self.forwardVoltage = val
         self.backwardVoltage = 0
 
-    def goBackward(self,val):
-        if(self.forwardVoltage > 0):
+    def go_backward(self, val):
+        if self.forwardVoltage > 0:
             self.forward.ChangeDutyCycle(0)
-        if(self.backwardVoltage > 0):
+        if self.backwardVoltage > 0:
             self.backward.ChangeDutyCycle(val)
         else:
             self.backward.ChangeDutyCycle(val)
         self.backwardVoltage = val
         self.forwardVoltage = 0
         
-    def turnRight(self):
-        if(self.leftVoltage > 0):
+    def turn_right(self):
+        if self.leftVoltage > 0:
             self.left.ChangeDutyCycle(0)
-        if(self.rightVoltage > 0):
+        if self.rightVoltage > 0:
             self.right.ChangeDutyCycle(100)
         else:
             self.right.ChangeDutyCycle(100)
@@ -62,10 +68,10 @@ class Robot:
         self.rightVoltage = 15
         self.leftVoltage = 0
         
-    def turnLeft(self):     
-        if(self.rightVoltage > 0):
+    def turn_left(self):
+        if self.rightVoltage > 0:
             self.right.ChangeDutyCycle(0)
-        if(self.leftVoltage > 0):
+        if self.leftVoltage > 0:
             self.left.ChangeDutyCycle(100)
         else:
             self.left.ChangeDutyCycle(100)
@@ -75,18 +81,22 @@ class Robot:
         self.rightVoltage = 0
         
     def straight(self):
-        if(self.leftVoltage > 0):
+        if self.leftVoltage > 0:
             self.left.ChangeDutyCycle(0)
             self.right.ChangeDutyCycle(15)
             time.sleep(0.1)
-        elif(self.rightVoltage > 0):
+
+        elif self.rightVoltage > 0:
             self.right.ChangeDutyCycle(0)
             self.left.ChangeDutyCycle(15)
             time.sleep(0.1)
-        if(self.leftVoltage > 0):    
+
+        if self.leftVoltage > 0:
             self.left.ChangeDutyCycle(0)
-        if(self.rightVoltage > 0):
+
+        if self.rightVoltage > 0:
             self.right.ChangeDutyCycle(0)
+
         self.leftVoltage = 0
         self.rightVoltage = 0
         
