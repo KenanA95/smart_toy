@@ -3,7 +3,7 @@ from record_route import *
 from datetime import datetime
 from test_robot import Robot
 import json
-import numpy as np
+#import numpy as np
 from scipy.interpolate import interp1d
 
 
@@ -79,14 +79,14 @@ def run_server(port):
 def send_to_hardware(command, val):
 
     if command == '/forwardBackward':
-        if 0 <= val < 50:
-            val = scale_backward_value(val)
-            robot.go_backward(val)
-        elif val == 50:
+        scale = (val - 50)/50
+
+        if scale < 0:
+            robot.go_backward(scale*-1)
+        elif scale == 0:
             robot.stop()
-        elif val > 50:
-            val = scale_forward_value(val)
-            robot.go_forward(val)
+        elif scale > 0:
+            robot.go_forward(scale)
 
     elif command == '/leftRight':
         if 0 <= val < 50:
