@@ -16,12 +16,6 @@ robot = Robot()
 
 class ToyHandler(http.server.BaseHTTPRequestHandler):
 
-    def do_OPTIONS(self):
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST')
-        self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
-        self.send_response(200)
-
     def do_GET(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -33,9 +27,16 @@ class ToyHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        length = int(self.headers['Content-Length'])
-        value = json.loads(self.rfile.read(length).decode('utf-8'))
-        handle_request(self.path, int(value['value']))
+
+        value = 0
+
+        # Parse the value from the sliders
+        if self.path == '/forwardBackward' or self.path == '/leftRight':
+            length = int(self.headers['Content-Length'])
+            value = json.loads(self.rfile.read(length).decode('utf-8'))
+            value = int(value['value'])
+
+        handle_request(self.path, value)
 
 
 def handle_request(path, value):
@@ -44,11 +45,10 @@ def handle_request(path, value):
         send_to_hardware(command=path, val=value)
 
         if record.get_state():
-            print("Inserting command into db...")
+            # Insert the command/timestamp
             insert_route(conn, path, value, timestamp=datetime.now())
 
     elif path == '/start':
-        print("Now recording commands...")
         # Clear any previous routes from the table
         cur = conn.cursor()
         cur.execute('delete from routes')
@@ -56,8 +56,7 @@ def handle_request(path, value):
         record.set_state(True)
 
     elif path == '/stop':
-        print("Stop recording selected. Current routes saved...")
-        output_routes(conn)
+        # output_routes(conn)
         insert_route(conn, command="stop", val=0, timestamp=datetime.now())
         record.set_state(False)
 
